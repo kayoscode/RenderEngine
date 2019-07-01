@@ -1,0 +1,35 @@
+1. explain the bounds of the project
+	-building it in C++
+	-using ncurses
+	-best to run on linux because pdcurses is hard to install and its worse
+	-give the github link to the project in the description
+2. initialize ncurses window
+	-explain potential problems with segment faults and how to fix them
+		-stty sane
+
+3. create the defs.h file
+
+//defs.h
+#include <ncurses.h>
+#include <stdint.h>
+
+#define WINDOW_WIDTH COLS
+#define WINDOW_HEIGHT LINES
+
+//main.cpp
+include <defs.h>
+  2 
+  1 int main(){
+4       initscr();
+  1     raw();
+  2     keypad(stdscr, TRUE);
+  3     noecho();
+  4 
+  5     printw(10, 1, "this is a test\n");
+  6 
+  7     getch();
+  8     endwin();
+  9 
+ 10     return 0;
+ 11 }
+
