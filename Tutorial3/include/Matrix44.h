@@ -22,7 +22,7 @@ class Matrix44{
         void transpose();
         void invert();  
         void negate();        
-		void print();
+		void print() const;
 
         void scale(const Vector3& scale);
         void rotate(const Vector3& eulerAxis, float angle);

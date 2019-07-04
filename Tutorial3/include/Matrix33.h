@@ -22,7 +22,7 @@ class Matrix33{
         void transpose();
         void invert();   
         void negate();  
-		void print();
+		void print() const;
                               
         float det() const;
                                          

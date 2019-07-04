@@ -362,7 +362,7 @@ float Matrix44::det() const{
     return f;
 }
 
-void Matrix44::print(){
+void Matrix44::print() const{
 	std::cout << m00 << " " << m01 << " " << m02 << " " << m03 << "\n";
 	std::cout << m10 << " " << m11 << " " << m12 << " " << m13 << "\n";
 	std::cout << m20 << " " << m21 << " " << m22 << " " << m23 << "\n";
