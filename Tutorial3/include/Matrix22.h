@@ -21,6 +21,7 @@ class Matrix22{
         void transpose();
         void invert();
         void negate();
+		void print() const;
 
         float det() const;
 

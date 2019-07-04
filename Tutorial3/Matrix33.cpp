@@ -1,6 +1,8 @@
 #include "Matrix33.h"
 #include "Vector3.h"
 
+#include <iostream>
+
 Matrix33::Matrix33()
     :m00(1), m01(0), m02(0),
     m10(0), m11(1), m12(0),
@@ -187,6 +189,11 @@ float Matrix33::det() const{
                 + m02 * (m10 * m21 - m11 * m20);
 }
 
+void Matrix33::print() const{
+	std::cout << m00 << " " << m01 << " " << m02 << "\n";
+	std::cout << m10 << " " << m11 << " " << m12 << "\n";
+	std::cout << m20 << " " << m21 << " " << m22 << "\n";
+}
 
 
 

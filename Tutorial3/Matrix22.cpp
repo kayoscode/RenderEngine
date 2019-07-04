@@ -1,6 +1,8 @@
 #include "Matrix22.h"
 #include "Vector2.h"
 
+#include <iostream>
+
 Matrix22::Matrix22() 
     :m00(1), m01(0), 
     m10(0), m11(1)
@@ -103,6 +105,11 @@ void Matrix22::negate(){
 
 float Matrix22::det() const{
     return m00 * m11 - m01 * m10;
+}
+
+void Matrix22::print() const{
+	std::cout << m00 << " " << m01 << "\n";
+	std::cout << m10 << " " << m11 << "\n";
 }
 
 
