@@ -23,8 +23,8 @@ float Vector2::length() const {
 }
 
 void Vector2::lerp(const Vector2& a, const Vector2& b, float t, Vector2& dest){
-	dest.x = a.x + ((a.x - b.x) * t);
-	dest.y = a.y + ((a.y - b.y) * t);
+	dest.x = a.x + ((b.x - a.x) * t);
+	dest.y = a.y + ((b.y - a.y) * t);
 }
 
 void Vector2::sub(const Vector2& left, const Vector2& right, Vector2& dest){

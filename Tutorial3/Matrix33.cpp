@@ -1,15 +1,13 @@
 #include "Matrix33.h"
 #include "Vector3.h"
 
-#include <iostream>
-
 Matrix33::Matrix33()
-	:m00(1), m01(0), m02(0),
-     m10(0), m11(1), m12(0),
-     m20(0), m21(0), m22(1)
- {}
+    :m00(1), m01(0), m02(0),
+    m10(0), m11(1), m12(0),
+    m20(0), m21(0), m22(1)
+{}
 
- Matrix33::Matrix33(const Matrix33& m)
+Matrix33::Matrix33(const Matrix33& m)
     :m00(m.m00), m01(m.m01), m02(m.m02),
     m10(m.m10), m11(m.m11), m12(m.m12),
     m20(m.m20), m21(m.m21), m22(m.m22)
@@ -93,29 +91,32 @@ void Matrix33::trans(const Matrix33& left, const Vector3& right, Vector3& dest){
     dest.z = z;
 }
 
-
 void Matrix33::setIdentity(){
-    m00 = 1;
-    m11 = 1;
-    m22 = 1;
-    m01 = 0;
-    m02 = 0;
-    m10 = 0;
-    m12 = 0;
-    m20 = 0;
-    m21 = 0;
+	m00 = 1;
+	m01 = 0;
+	m02 = 0;
+
+	m10 = 0;
+	m11 = 1;
+	m12 = 0;
+
+	m20 = 0;
+	m21 = 0;
+	m22 = 1;
 }
 
 void Matrix33::setZero(){
-    m00 = 0;
-    m01 = 0;
-    m02 = 0;
-    m10 = 0;
-    m11 = 0;
-    m12 = 0;
-    m20 = 0;
-    m21 = 0;
-    m22 = 0;
+	m00 = 0;
+	m01 = 0;
+	m02 = 0;
+
+	m10 = 0;
+	m11 = 0;
+	m12 = 0;
+
+	m20 = 0;
+	m21 = 0;
+	m22 = 0;
 }
 
 void Matrix33::transpose(){
@@ -186,11 +187,6 @@ float Matrix33::det() const{
                 + m02 * (m10 * m21 - m11 * m20);
 }
 
-void Matrix33::print() const{
-	std::cout << m00 << " " << m01 << " " << m02 << "\n";
-	std::cout << m10 << " " << m11 << " " << m12 << "\n";
-	std::cout << m20 << " " << m21 << " " << m22 << "\n";
-}
 
 
 

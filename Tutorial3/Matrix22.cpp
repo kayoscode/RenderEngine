@@ -1,40 +1,39 @@
 #include "Matrix22.h"
 #include "Vector2.h"
-#include <iostream>
 
-Matrix22::Matrix22()                                                                                                
+Matrix22::Matrix22() 
     :m00(1), m01(0), 
-	m10(0), m11(1)
+    m10(0), m11(1)
 {}
 
-Matrix22::Matrix22(const Matrix22& m)                                                                               
+Matrix22::Matrix22(const Matrix22& m)
     :m00(m.m00), m01(m.m01), 
-	m10(m.m10), m11(m.m11)                                                                 
+    m10(m.m10), m11(m.m11)
 {}
 
-Matrix22& Matrix22::operator=(const Matrix22& m){ 
+Matrix22& Matrix22::operator=(const Matrix22& m){
     this->m00 = m.m00;
     this->m01 = m.m01;
-    this->m10 = m.m10;                                                                                              
+    this->m10 = m.m10;
     this->m11 = m.m11;
 
     return *this;
 }
 
-Matrix22::~Matrix22(){}                                    
+Matrix22::~Matrix22(){}
 
 void Matrix22::add(const Matrix22& left, const Matrix22& right, Matrix22& dest){
-	dest.m00 = left.m00 + right.m00;
-	dest.m01 = left.m01 + right.m01;
-	dest.m10 = left.m10 + right.m10;
-	dest.m11 = left.m11 + right.m11;
+    dest.m00 = left.m00 + right.m00;
+    dest.m01 = left.m01 + right.m01;
+    dest.m10 = left.m10 + right.m10;
+    dest.m11 = left.m11 + right.m11;
 }
 
 void Matrix22::sub(const Matrix22& left, const Matrix22& right, Matrix22& dest){
-	dest.m00 = left.m00 - right.m00;
-	dest.m01 = left.m01 - right.m01;
-	dest.m10 = left.m10 - right.m10;
-	dest.m11 = left.m11 - right.m11;
+    dest.m00 = left.m00 - right.m00;
+    dest.m01 = left.m01 - right.m01;
+    dest.m10 = left.m10 - right.m10;
+    dest.m11 = left.m11 - right.m11;
 }
 
 void Matrix22::mul(const Matrix22& left, const Matrix22& right, Matrix22& dest){
@@ -77,6 +76,7 @@ void Matrix22::transpose(){
     m10 = temp;
 }
 
+
 void Matrix22::invert(){
     float determinant = det();
 
@@ -105,8 +105,4 @@ float Matrix22::det() const{
     return m00 * m11 - m01 * m10;
 }
 
-void Matrix22::print() const {
-	std::cout << m00 << " " << m01 << "\n";
-	std::cout << m10 << " " << m11 << "\n";
-}
 
