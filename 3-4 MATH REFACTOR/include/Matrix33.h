@@ -29,7 +29,7 @@ class Matrix33{
         Matrix33& transpose();
         Matrix33& invert();
         Matrix33& negate();
-		void print() const;
+        void print() const;
     
         float det() const;
         

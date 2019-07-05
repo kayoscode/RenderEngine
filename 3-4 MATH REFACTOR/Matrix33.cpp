@@ -46,7 +46,7 @@ Matrix33& Matrix33::add(const Matrix33& left, const Matrix33& right, Matrix33& d
     dest.m21 = left.m21 + right.m21;
     dest.m22 = left.m22 + right.m22;
 
-	return dest;
+    return dest;
 }
 
 Matrix33& Matrix33::sub(const Matrix33& left, const Matrix33& right, Matrix33& dest){
@@ -62,7 +62,7 @@ Matrix33& Matrix33::sub(const Matrix33& left, const Matrix33& right, Matrix33& d
     dest.m21 = left.m21 - right.m21;
     dest.m22 = left.m22 - right.m22;
 
-	return dest;
+    return dest;
 }
 
 Matrix33& Matrix33::mul(const Matrix33& left, const Matrix33& right, Matrix33& dest){
@@ -86,7 +86,7 @@ Matrix33& Matrix33::mul(const Matrix33& left, const Matrix33& right, Matrix33& d
     dest.m21 = m21;
     dest.m22 = m22;
 
-	return dest;
+    return dest;
 }
 
 Vector3& Matrix33::trans(const Matrix33& left, const Vector3& right, Vector3& dest){
@@ -98,78 +98,78 @@ Vector3& Matrix33::trans(const Matrix33& left, const Vector3& right, Vector3& de
     dest.y = y;
     dest.z = z;
 
-	return dest;
+    return dest;
 }
 
 Matrix33& Matrix33::operator+=(const Matrix33& right){
-	Matrix33::add(*this, right, *this);
-	return *this;
+    Matrix33::add(*this, right, *this);
+    return *this;
 }
 
 Matrix33& Matrix33::operator-=(const Matrix33& right){
-	Matrix33::sub(*this, right, *this);
-	return *this;
+    Matrix33::sub(*this, right, *this);
+    return *this;
 }
 
 Matrix33& Matrix33::operator*=(const Matrix33& right){
-	Matrix33::mul(*this, right, *this);
-	return *this;
+    Matrix33::mul(*this, right, *this);
+    return *this;
 }
 
 Matrix33 Matrix33::operator+(const Matrix33& right){
-	Matrix33 ret;
-	Matrix33::add(*this, right, ret);
-	return ret;
+    Matrix33 ret;
+    Matrix33::add(*this, right, ret);
+    return ret;
 }
 
 Matrix33 Matrix33::operator-(const Matrix33& right){
-	Matrix33 ret;
-	Matrix33::sub(*this, right, ret);
-	return ret;
+    Matrix33 ret;
+    Matrix33::sub(*this, right, ret);
+    return ret;
 }
 
 Matrix33 Matrix33::operator*(const Matrix33& right){
-	Matrix33 ret;
-	Matrix33::mul(*this, right, ret);
-	return ret;
+    Matrix33 ret;
+    Matrix33::mul(*this, right, ret);
+    return ret;
 }
 
 Vector3 Matrix33::operator*(const Vector3& vec){
-	Vector3 ret;
-	Matrix33::trans(*this, vec, ret);
-	return ret;
+    Vector3 ret;
+    Matrix33::trans(*this, vec, ret);
+    return ret;
 }
 
 Matrix33& Matrix33::setIdentity(){
-	m00 = 1;
-	m01 = 0;
-	m02 = 0;
+    m00 = 1;
+    m01 = 0;
+    m02 = 0;
 
-	m10 = 0;
-	m11 = 1;
-	m12 = 0;
+    m10 = 0;
+    m11 = 1;
+    m12 = 0;
 
-	m20 = 0;
-	m21 = 0;
-	m22 = 1;
+    m20 = 0;
+    m21 = 0;
+    m22 = 1;
 
-	return *this;
+    return *this;
 }
 
 Matrix33& Matrix33::setZero(){
-	m00 = 0;
-	m01 = 0;
-	m02 = 0;
+    m00 = 0;
+    m01 = 0;
+    m02 = 0;
 
-	m10 = 0;
-	m11 = 0;
-	m12 = 0;
+    m10 = 0;
+    m11 = 0;
+    m12 = 0;
 
-	m20 = 0;
-	m21 = 0;
-	m22 = 0;
+    m20 = 0;
+    m21 = 0;
+    m22 = 0;
 
-	return *this;
+    return *this;
 }
 
 Matrix33& Matrix33::transpose(){
@@ -193,7 +193,7 @@ Matrix33& Matrix33::transpose(){
     this->m21 = m21;
     this->m22 = m22;
 
-	return *this;
+    return *this;
 }
 
 Matrix33& Matrix33::invert(){
@@ -223,7 +223,7 @@ Matrix33& Matrix33::invert(){
         this->m21 = t12*determinant_inv;
     }
 
-	return *this;
+    return *this;
 }
 
 Matrix33& Matrix33::negate(){
@@ -237,19 +237,19 @@ Matrix33& Matrix33::negate(){
     this->m21 = -this->m22;
     this->m22 = -this->m21;
 
-	return *this;
+    return *this;
 }
 
 float Matrix33::det() const{
     return m00 * (m11 * m22 - m12 * m21)
-                + m01 * (m12 * m20 - m10 * m22)
-                + m02 * (m10 * m21 - m11 * m20);
+        + m01 * (m12 * m20 - m10 * m22)
+        + m02 * (m10 * m21 - m11 * m20);
 }
 
 void Matrix33::print() const{
-	std::cout << m00 << " " << m01 << " " << m02 << "\n";
-	std::cout << m10 << " " << m11 << " " << m12 << "\n";
-	std::cout << m20 << " " << m21 << " " << m22 << "\n";
+    std::cout << m00 << " " << m01 << " " << m02 << "\n";
+    std::cout << m10 << " " << m11 << " " << m12 << "\n";
+    std::cout << m20 << " " << m21 << " " << m22 << "\n";
 }
 
 

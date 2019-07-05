@@ -16,25 +16,25 @@ class Matrix22{
         static Matrix22& mul(const Matrix22& left, const Matrix22& right, Matrix22& dest);
         static Vector2& trans(const Matrix22& left, const Vector2& right, Vector2& dest);
 
-		Matrix22& operator+=(const Matrix22& right);
-		Matrix22& operator-=(const Matrix22& right);
-		Matrix22& operator*=(const Matrix22& right);
-		Matrix22 operator+(const Matrix22& right);
-		Matrix22 operator-(const Matrix22& right);
-		Matrix22 operator*(const Matrix22& right);
-		Vector2 operator*(const Vector2& vec);
+        Matrix22& operator+=(const Matrix22& right);
+        Matrix22& operator-=(const Matrix22& right);
+        Matrix22& operator*=(const Matrix22& right);
+        Matrix22 operator+(const Matrix22& right);
+        Matrix22 operator-(const Matrix22& right);
+        Matrix22 operator*(const Matrix22& right);
+        Vector2 operator*(const Vector2& vec);
 
         Matrix22& setIdentity();
         Matrix22& setZero();
         Matrix22& transpose();
         Matrix22& invert();
         Matrix22& negate();
-		void print() const;
+        void print() const;
 
         float det() const;
 
         float m00, m01;
-		float m10, m11;
+        float m10, m11;
 };
 
 #endif

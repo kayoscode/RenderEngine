@@ -30,7 +30,7 @@ Matrix22& Matrix22::add(const Matrix22& left, const Matrix22& right, Matrix22& d
     dest.m10 = left.m10 + right.m10;
     dest.m11 = left.m11 + right.m11;
 
-	return dest;
+    return dest;
 }
 
 Matrix22& Matrix22::sub(const Matrix22& left, const Matrix22& right, Matrix22& dest){
@@ -39,7 +39,7 @@ Matrix22& Matrix22::sub(const Matrix22& left, const Matrix22& right, Matrix22& d
     dest.m10 = left.m10 - right.m10;
     dest.m11 = left.m11 - right.m11;
 
-	return dest;
+    return dest;
 }
 
 Matrix22& Matrix22::mul(const Matrix22& left, const Matrix22& right, Matrix22& dest){
@@ -53,7 +53,7 @@ Matrix22& Matrix22::mul(const Matrix22& left, const Matrix22& right, Matrix22& d
     dest.m10 = m10;
     dest.m11 = m11;
 
-	return dest;
+    return dest;
 }
 
 Vector2& Matrix22::trans(const Matrix22& left, const Vector2& right, Vector2& dest){
@@ -63,64 +63,64 @@ Vector2& Matrix22::trans(const Matrix22& left, const Vector2& right, Vector2& de
     dest.x = x;
     dest.y = y;
 
-	return dest;
+    return dest;
 }
 
 Matrix22& Matrix22::operator+=(const Matrix22& right){
-	Matrix22::add(*this, right, *this);
-	return *this;
+    Matrix22::add(*this, right, *this);
+    return *this;
 }
 
 Matrix22& Matrix22::operator-=(const Matrix22& right){
-	Matrix22::sub(*this, right, *this);
-	return *this;
+    Matrix22::sub(*this, right, *this);
+    return *this;
 }
 
 Matrix22& Matrix22::operator*=(const Matrix22& right){
-	Matrix22::mul(*this, right, *this);
-	return *this;
+    Matrix22::mul(*this, right, *this);
+    return *this;
 }
 
 Matrix22 Matrix22::operator+(const Matrix22& right){
-	Matrix22 ret;
-	Matrix22::add(*this, right, ret);
-	return ret;
+    Matrix22 ret;
+    Matrix22::add(*this, right, ret);
+    return ret;
 }
 
 Matrix22 Matrix22::operator-(const Matrix22& right){
-	Matrix22 ret;
-	Matrix22::sub(*this, right, ret);
-	return ret;
+    Matrix22 ret;
+    Matrix22::sub(*this, right, ret);
+    return ret;
 }
 
 Matrix22 Matrix22::operator*(const Matrix22& right){
-	Matrix22 ret;
-	Matrix22::mul(*this, right, ret);
-	return ret;
+    Matrix22 ret;
+    Matrix22::mul(*this, right, ret);
+    return ret;
 }
 
 Vector2 Matrix22::operator*(const Vector2& vec){
-	Vector2 ret;
-	Matrix22::trans(*this, vec, ret);
-	return ret;
+    Vector2 ret;
+    Matrix22::trans(*this, vec, ret);
+    return ret;
 }
 
 Matrix22& Matrix22::setIdentity(){
-	m00 = 1;
-	m11 = 1;
-	m01 = 0;
-	m10 = 0;
+    m00 = 1;
+    m11 = 1;
+    m01 = 0;
+    m10 = 0;
 
-	return *this;
+    return *this;
 }
 
 Matrix22& Matrix22::setZero(){
-	m00 = 0;
-	m11 = 0;
-	m01 = 0;
-	m10 = 0;
+    m00 = 0;
+    m11 = 0;
+    m01 = 0;
+    m10 = 0;
 
-	return *this;
+    return *this;
 }
 
 Matrix22& Matrix22::transpose(){
@@ -128,7 +128,7 @@ Matrix22& Matrix22::transpose(){
     m01 = m10;
     m10 = temp;
 
-	return *this;
+    return *this;
 }
 
 
@@ -148,7 +148,7 @@ Matrix22& Matrix22::invert(){
         this->m11 = t11;
     }
 
-	return *this;
+    return *this;
 }
 
 Matrix22& Matrix22::negate(){
@@ -157,7 +157,7 @@ Matrix22& Matrix22::negate(){
     m10 = -m10;
     m11 = -m11;
 
-	return *this;
+    return *this;
 }
 
 float Matrix22::det() const{
@@ -165,8 +165,8 @@ float Matrix22::det() const{
 }
 
 void Matrix22::print() const{
-	std::cout << m00 << " " << m01 << "\n";
-	std::cout << m10 << " " << m11 << "\n";
+    std::cout << m00 << " " << m01 << "\n";
+    std::cout << m10 << " " << m11 << "\n";
 }
 
 

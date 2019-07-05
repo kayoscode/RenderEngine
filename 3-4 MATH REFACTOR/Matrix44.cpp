@@ -13,7 +13,7 @@ Matrix44::Matrix44()
     m20(0), m21(0), m22(1), m23(0),
     m30(0), m31(0), m32(0), m33(1)
 {}      
-        
+
 Matrix44::Matrix44(const Matrix44& m)
     :m00(m.m00), m01(m.m01), m02(m.m02), m03(m.m03),
     m10(m.m10), m11(m.m11), m12(m.m12), m13(m.m13),
@@ -27,20 +27,20 @@ Matrix44& Matrix44::translate(const Vector3& vec) {
     this->m32 += this->m02 * vec.x + this->m12 * vec.y + this->m22 * vec.z;
     this->m33 += this->m03 * vec.x + this->m13 * vec.y + this->m23 * vec.z;
 
-	return *this;
+    return *this;
 }
-        
+
 Matrix44& Matrix44::operator=(const Matrix44& m){
     m00 = m.m00;
     m01 = m.m01;
     m02 = m.m02;
     m03 = m.m03;
-        
+
     m10 = m.m10;
     m11 = m.m11;
     m12 = m.m12;
     m13 = m.m13;
-        
+
     m20 = m.m20;
     m21 = m.m21;
     m22 = m.m22;
@@ -77,7 +77,7 @@ Matrix44& Matrix44::add(const Matrix44& left, const Matrix44& right, Matrix44& d
     dest.m32 = left.m32 + right.m32;
     dest.m33 = left.m33 + right.m33;
 
-	return dest;
+    return dest;
 }
 
 Matrix44& Matrix44::sub(const Matrix44& left, const Matrix44& right, Matrix44& dest){
@@ -101,7 +101,7 @@ Matrix44& Matrix44::sub(const Matrix44& left, const Matrix44& right, Matrix44& d
     dest.m32 = left.m32 - right.m32;
     dest.m33 = left.m33 - right.m33;
 
-	return dest;
+    return dest;
 }
 
 Matrix44& Matrix44::mul(const Matrix44& left, const Matrix44& right, Matrix44& dest){
@@ -139,7 +139,7 @@ Matrix44& Matrix44::mul(const Matrix44& left, const Matrix44& right, Matrix44& d
     dest.m32 = m32;
     dest.m33 = m33;
 
-	return dest;
+    return dest;
 }
 
 Vector4& Matrix44::trans(const Matrix44& left, const Vector4& right, Vector4& dest){
@@ -152,47 +152,47 @@ Vector4& Matrix44::trans(const Matrix44& left, const Vector4& right, Vector4& de
     dest.y = y;
     dest.z = z;
     dest.w = w;
-	
-	return dest;
+
+    return dest;
 }
 
 Matrix44& Matrix44::operator+=(const Matrix44& right){
-	Matrix44::add(*this, right, *this);
-	return *this;
+    Matrix44::add(*this, right, *this);
+    return *this;
 }
 
 Matrix44& Matrix44::operator-=(const Matrix44& right){
-	Matrix44::sub(*this, right, *this);
-	return *this;
+    Matrix44::sub(*this, right, *this);
+    return *this;
 }
 
 Matrix44& Matrix44::operator*=(const Matrix44& right){
-	Matrix44::mul(*this, right, *this);
-	return *this;
+    Matrix44::mul(*this, right, *this);
+    return *this;
 }
 
 Matrix44 Matrix44::operator+(const Matrix44& right){
-	Matrix44 ret;
-	Matrix44::add(*this, right, ret);
-	return ret;
+    Matrix44 ret;
+    Matrix44::add(*this, right, ret);
+    return ret;
 }
 
 Matrix44 Matrix44::operator-(const Matrix44& right){
-	Matrix44 ret;
-	Matrix44::sub(*this, right, ret);
-	return ret;
+    Matrix44 ret;
+    Matrix44::sub(*this, right, ret);
+    return ret;
 }
 
 Matrix44 Matrix44::operator*(const Matrix44& right){
-	Matrix44 ret;
-	Matrix44::mul(*this, right, ret);
-	return ret;
+    Matrix44 ret;
+    Matrix44::mul(*this, right, ret);
+    return ret;
 }
 
 Vector4 Matrix44::operator*(const Vector4& vec){
-	Vector4 ret;
-	Matrix44::trans(*this, vec, ret);
-	return ret;
+    Vector4 ret;
+    Matrix44::trans(*this, vec, ret);
+    return ret;
 }
 
 Matrix44& Matrix44::setIdentity(){
@@ -205,7 +205,7 @@ Matrix44& Matrix44::setIdentity(){
     m11 = 1;
     m12 = 0;
     m13 = 0;
-	
+
     m20 = 0;
     m21 = 0;
     m22 = 1;
@@ -216,7 +216,7 @@ Matrix44& Matrix44::setIdentity(){
     m32 = 0;
     m33 = 1;
 
-	return *this;
+    return *this;
 }
 
 Matrix44& Matrix44::setZero(){
@@ -229,7 +229,7 @@ Matrix44& Matrix44::setZero(){
     m11 = 0;
     m12 = 0;
     m13 = 0;
-	
+
     m20 = 0;
     m21 = 0;
     m22 = 0;
@@ -240,7 +240,7 @@ Matrix44& Matrix44::setZero(){
     m32 = 0;
     m33 = 0;
 
-	return *this;
+    return *this;
 }
 
 Matrix44& Matrix44::transpose(){
@@ -278,7 +278,7 @@ Matrix44& Matrix44::transpose(){
     this->m32 = m32;
     this->m33 = m33;
 
-	return *this;
+    return *this;
 }
 
 Matrix44& Matrix44::invert(){
@@ -325,7 +325,7 @@ Matrix44& Matrix44::invert(){
         m23 = t32*determinant_inv;
     }
 
-	return *this;
+    return *this;
 }
 
 Matrix44& Matrix44::negate(){
@@ -349,7 +349,7 @@ Matrix44& Matrix44::negate(){
     m32 = -m32;
     m33 = -m33;
 
-	return *this;
+    return *this;
 }
 
 Matrix44& Matrix44::scale(const Vector3& scale){
@@ -366,7 +366,7 @@ Matrix44& Matrix44::scale(const Vector3& scale){
     this->m22 = this->m22 * scale.z;
     this->m23 = this->m23 * scale.z;
 
-	return *this;
+    return *this;
 }
 
 Matrix44& Matrix44::rotate(const Vector3& eulerAxis, float angle){
@@ -412,7 +412,7 @@ Matrix44& Matrix44::rotate(const Vector3& eulerAxis, float angle){
     this->m12 = t12;
     this->m13 = t13;
 
-	return *this;
+    return *this;
 }
 
 float Matrix44::det() const{
@@ -436,10 +436,10 @@ float Matrix44::det() const{
 }
 
 void Matrix44::print() const{
-	std::cout << m00 << " " << m01 << " " << m02 << " " << m03 << "\n";
-	std::cout << m10 << " " << m11 << " " << m12 << " " << m13 << "\n";
-	std::cout << m20 << " " << m21 << " " << m22 << " " << m23 << "\n";
-	std::cout << m30 << " " << m31 << " " << m32 << " " << m33 << "\n";
+    std::cout << m00 << " " << m01 << " " << m02 << " " << m03 << "\n";
+    std::cout << m10 << " " << m11 << " " << m12 << " " << m13 << "\n";
+    std::cout << m20 << " " << m21 << " " << m22 << " " << m23 << "\n";
+    std::cout << m30 << " " << m31 << " " << m32 << " " << m33 << "\n";
 }
 
 

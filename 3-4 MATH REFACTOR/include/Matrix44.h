@@ -17,24 +17,24 @@ class Matrix44{
         static Matrix44& mul(const Matrix44& left, const Matrix44& right, Matrix44& dest);
         static Vector4& trans(const Matrix44& left, const Vector4& right, Vector4& dest);
 
-		Matrix44& operator+=(const Matrix44& right);
-		Matrix44& operator-=(const Matrix44& right);
-		Matrix44& operator*=(const Matrix44& right);
-		Matrix44 operator+(const Matrix44& right);
-		Matrix44 operator-(const Matrix44& right);
-		Matrix44 operator*(const Matrix44& right);
-		Vector4 operator*(const Vector4& vec);
-    
+        Matrix44& operator+=(const Matrix44& right);
+        Matrix44& operator-=(const Matrix44& right);
+        Matrix44& operator*=(const Matrix44& right);
+        Matrix44 operator+(const Matrix44& right);
+        Matrix44 operator-(const Matrix44& right);
+        Matrix44 operator*(const Matrix44& right);
+        Vector4 operator*(const Vector4& vec);
+
         Matrix44& setIdentity(); 
         Matrix44& setZero();
         Matrix44& transpose();
         Matrix44& invert();
         Matrix44& negate();
-		void print() const;
-    
+        void print() const;
+
         Matrix44& scale(const Vector3& scale);
         Matrix44& rotate(const Vector3& eulerAxis, float angle);
-		Matrix44& translate(const Vector3& translation);
+        Matrix44& translate(const Vector3& translation);
 
         float det() const;
     
