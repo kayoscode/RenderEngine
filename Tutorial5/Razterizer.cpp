@@ -52,8 +52,8 @@ void Razterizer::razterizeTriangle(const Vector2& v1, const Vector2& v2, const V
     minx = MAX(0, MIN(v1.x, MIN(v2.x, v3.x)));
     miny = MAX(0, MIN(v1.y, MIN(v2.y, v3.y)));
 
-    maxx = MIN(fb->width, ceil(MAX(v1.x, MAX(v2.x, v3.x)) + 1));
-    maxy = MIN(fb->height, ceil(MAX(v1.y, MAX(v2.y, v3.y)) + 1));
+    maxx = MIN(fb->width, MAX(v1.x, MAX(v2.x, v3.x)) + 1);
+    maxy = MIN(fb->height, MAX(v1.y, MAX(v2.y, v3.y)) + 1);
 
     for(int j = miny; j < maxy; j++){
         for(int i = minx; i < maxx; i++){
