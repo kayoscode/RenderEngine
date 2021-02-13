@@ -22,7 +22,7 @@ int main(void){
     while(true){
         angle += .002f;
         Matrix44 transformation;
-        transformation.rotate(Vector3(0, 0, 1), angle);
+        transformation.rotate(Vector3(0, 1, 1), angle);
 
         Vector4 v1(-1, 1, 0, 1);
         Vector4 v2(1, 1, 0, 1);
