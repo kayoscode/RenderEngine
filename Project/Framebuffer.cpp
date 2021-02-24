@@ -17,7 +17,6 @@ void Framebuffer::clear(int clearColor){
 
 void Framebuffer::setPixel(int x, int y, colorbuffer_t pixelcolor, depthbuffer_t depth){
     int index = (y * width) + x;
-    if(index < 0 || index >= (width * height)) return;
 
     if(depth < depthbuffer[index]){
         colorbuffer[index] = pixelcolor;
@@ -47,19 +46,16 @@ Framebuffer::~Framebuffer(){
 }
 
 void Framebuffer::print(){
-    for(int i = 0; i < height; i++){
-        for(int j = 0; j < width; j++){
-            int index = (width * i) + j;
+    for(int i = 0; i < width; i++){
+        for(int j = 0; j < height; j++){
+            int index = (width * j) + i;
 
-            if(!colorbuffer[index]) {
-                //mvprintw(i, j, " ");
-                continue;
-            }
+            if(!colorbuffer[index]) continue;
 
             //int color = (char)(colorbuffer[index] >> 8);
             //attron(COLOR_PAIR(color));
 
-            mvprintw(i, j, "%c", (char)colorbuffer[index]);
+            mvprintw(j, i, "%c", (char)colorbuffer[index]);
         }
     }
 }

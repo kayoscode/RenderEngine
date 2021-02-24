@@ -306,8 +306,13 @@ class DataList {
         int bind(float* values, int count) {
             indices[indicesIndex++] = index;
 
-            for(int i = 0; i < count; i++) {
-                data[index++] = values[i];
+            if(values != nullptr) {
+                for(int i = 0; i < count; i++) {
+                    data[index++] = values[i];
+                }
+            }
+            else {
+                index += count;
             }
 
             indices[indicesIndex] = index;
@@ -320,6 +325,23 @@ class DataList {
 
         int getCount() {
             return count;
+        }
+
+        int getLocationCount() {
+            return indicesIndex;
+        }
+
+        float getRawValue(int index) {
+            return data[index];
+        }
+
+        void setRawValue(int index, float value) {
+            data[index] = value;
+        }
+
+        void clear() {
+            index = 0;
+            indicesIndex = 0;
         }
 
     private:

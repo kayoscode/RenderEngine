@@ -1,6 +1,5 @@
 #include "defs.h"
 #include <iostream>
-#include <vector>
 
 #include "Vector2.h"
 #include "Vector3.h"
@@ -10,56 +9,61 @@
 #include "GenMath.h"
 #include "Camera.h"
 #include "Loader.h"
-#include "Shader.h"
 
+#include "ShaderProgram.h"
 #include "BasicShaders.h"
-#include <atomic>
+
+float angle = 0;
 
 RenderContext* renderContext;
 Camera* cam = nullptr;
-
 IndexedModel model;
-VertexObject modelVao(3);
+VertexArrayObject modelVAO(4);
 
 BasicVertexShader vs;
-FragmentShader fs(1000);
-ShaderProgram shader((VertexShader*)&vs, &fs);
-
-std::atomic<float> angle(.001f);
+BasicFragmentShader fs;
+ShaderProgram shader((VertexShader*)&vs, (FragmentShader*)&fs);
 
 bool renderCB(){
     renderContext->getRasterizer()->clearFrame();
-    angle = angle + .01;
 
     Matrix44 transformation;
-    transformation.translate(Vector3(0, 0, -3.));
-    transformation.scale(Vector3(1, 1, 1));
-    transformation.rotate(Vector3(.3f, 1, .8f).normalize(), angle);
+    Matrix44 PVMatrix;
+    Matrix44 finalMatrix;
 
     cam->calculateViewMatrix();
 
-    //set uniforms
-    shader.vs->getUniforms()->set(vs.location_projectionMatrix, cam->getProjectionMatrix());
-    shader.vs->getUniforms()->set(vs.location_viewMatrix, cam->getViewMatrix());
-    shader.vs->getUniforms()->set(vs.location_transformation, transformation);
+    angle += .001f;
 
-    renderContext->renderIndexedTriangles(shader, modelVao);
+    //REMEMBER TO SWITCH TO THIS ORDER DURING VIDEO!!!!!!
+    transformation.translate(Vector3(0, 0, -3.f));
+    transformation.rotate(Vector3(.7, .2, .6).normalize(), angle);
+    transformation.scale(Vector3(1, 1, 1));
+
+    //set uniforms
+    vs.getUniforms()->set(vs.locationProjectionMatrix, cam->getProjectionMatrix());
+    vs.getUniforms()->set(vs.locationViewMatrix, cam->getViewMatrix());
+    vs.getUniforms()->set(vs.locationTransformation, transformation);
+
+    vs.getUniforms()->set(vs.locationLightPos, Vector3(0, 0, 10));
+
+    //render the object using the shader and the vao
+    renderContext->renderIndexedTriangles(shader, modelVAO);
 
     return true;
 }
 
 int main(void){
-    if(loadIndexedModel("res/cube.obj", model)) {}
-    else {
-        std::cout << "failed to load model\n";
+    if(!loadIndexedModel("res/B2.obj", model)) {
+        std::cout << "Failed to load model";
         return -1;
     }
 
-    //load model into VAO
-    modelVao.bufferData(0, model.positions, model.positionsCount, 3);
-    modelVao.bufferData(1, model.uvs, model.uvsCount, 2);
-    modelVao.bufferData(2, model.normals, model.normalsCount, 3);
-    modelVao.bufferIndices(model.indices, model.indexCount);
+    //load data into VAO
+    modelVAO.bufferData(0, model.positions, model.positionsCount, 3);
+    modelVAO.bufferData(1, model.uvs, model.uvsCount, 2);
+    modelVAO.bufferData(2, model.normals, model.normalsCount, 3);
+    modelVAO.bufferIndices(model.indices, model.indexCount);
 
 	initscr();
 	raw();
@@ -70,7 +74,7 @@ int main(void){
 
     renderContext = new RenderContext(WW, WH);
     cam = new Camera();
-    cam->createProjection(1.4, (WW / (float)2) / WH, .2f, 400);
+    cam->createProjection(1.31f, WW / (WH * 2), .2f, 400);
 
     renderContext->getRasterizer()->setRenderCB(renderCB);
 
@@ -84,6 +88,7 @@ int main(void){
 
     getch();
     clear();
+
     endwin();
 
     delete renderContext;

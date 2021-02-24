@@ -10,6 +10,11 @@
 
 std::atomic<bool> renderStart, renderFinished, programRunning;
 
+#define ATTRIBUTEV1 0
+#define ATTRIBUTEV2 1
+#define ATTRIBUTEV3 2
+#define ATTRIBUTEPASS 3
+
 void renderThreadF(bool(**renderCB)()){
     while(programRunning){
         if(renderStart){
@@ -25,28 +30,32 @@ void renderThreadF(bool(**renderCB)()){
     }
 }
 
-static inline bool isPointInTriangle(const Vector3& barryCentricCoords)
-{
-    int one = (barryCentricCoords.x < -0.001);
-    int two = (barryCentricCoords.y < -0.001);
-    int three = (barryCentricCoords.z < -0.001);
+static Vector3 getBarryCentricCoordinates(int ptx, int pty, const Vector2& v1, const Vector2& v2, const Vector2& v3) {
+    Vector3 ret;
 
-    //is the point in the triangle
-    return ((one == two) && (two == three));
-}
-
-static inline void calculateBarryCentricCoords(int ptx, int pty, const Vector2& v1, const Vector2& v2, const Vector2& v3, Vector3& coords) {
-    coords.x = ((v2.y - v3.y) * (ptx - v3.x) +
+    ret.x = ((v2.y - v3.y) * (ptx - v3.x) +
             (v3.x - v2.x) * (pty - v3.y)) /
         ((v2.y - v3.y) * (v1.x - v3.x) +
          (v3.x - v2.x) * (v1.y - v3.y));
 
-    coords.y = ((v3.y - v1.y) * (ptx - v3.x) +
+    ret.y = ((v3.y - v1.y) * (ptx - v3.x) +
             (v1.x - v3.x) * (pty - v3.y)) /
         ((v2.y - v3.y) * (v1.x - v3.x) +
          (v3.x - v2.x) * (v1.y - v3.y));
 
-    coords.z = 1.0f - coords.x - coords.y;
+    ret.z = 1.0f - ret.x - ret.y;
+
+    return ret;
+}
+
+static inline bool isPointInTriangle(const Vector3& barryCentric)
+{
+    int one = (barryCentric.x < -0.001);
+    int two = (barryCentric.y < -0.001);
+    int three = (barryCentric.z < -0.001);
+
+    //is the point in the triangle
+    return ((one == two) && (two == three));
 }
 
 void Rasterizer::presentFrame(){
@@ -81,7 +90,15 @@ Rasterizer::~Rasterizer(){
     delete frameBuffers[1];
 }
 
-void Rasterizer::rasterizeTriangle(const Vector2& vv1, const Vector2& vv2, const Vector2& vv3){
+void Rasterizer::rasterizeTriangle(const Vector4& vv1, const Vector4& vv2, const Vector4& vv3, ShaderProgram& shader, DataList** passAttributes){
+    int rawSize = 0;
+
+    //allocate pass size
+    for(int i = 0; i < passAttributes[ATTRIBUTEV1]->getLocationCount(); i++) {
+        passAttributes[ATTRIBUTEPASS]->bind(nullptr, passAttributes[ATTRIBUTEV1]->getLocationSize(i));
+        rawSize += passAttributes[ATTRIBUTEV1]->getLocationSize(i);
+    }
+
     Framebuffer* fb = rFrame;
 
     int h_width = fb->getWidth() / 2, h_height = fb->getHeight() / 2;
@@ -98,32 +115,68 @@ void Rasterizer::rasterizeTriangle(const Vector2& vv1, const Vector2& vv2, const
     maxx = MIN(fb->getWidth(), MAX(v1.x, MAX(v2.x, v3.x)) + 1);
     maxy = MIN(fb->getHeight(), MAX(v1.y, MAX(v2.y, v3.y)) + 1);
 
-    Vector3 barryCentricCoords;
+    float z1 = 1 / vv1.z;
+    float z2 = 1 / vv2.z;
+    float z3 = 1 / vv3.z;
 
     for(int j = miny; j < maxy; j++){
         for(int i = minx; i < maxx; i++){
-            calculateBarryCentricCoords(i, j, v1, v2, v3, barryCentricCoords);
-            if(isPointInTriangle(barryCentricCoords)){
-                fb->setPixel(i, j, '#', 0);
+            Vector3 barryCentric = getBarryCentricCoordinates(i, j, v1, v2, v3);
+            Vector4 fragmentOutput;
+
+            if(isPointInTriangle(barryCentric)){
+                float zInterpolated = z1 * barryCentric.x + z2 * barryCentric.y + z3 * barryCentric.z;
+
+                //loop through each vertex and interpolate each value (DO NOT USE AFFINE SPACE INTERPOLATION)
+                //compute projection space interpolation
+                for(int i = 0; i < rawSize; i++) {
+                    float value1 = passAttributes[ATTRIBUTEV1]->getRawValue(i) / vv1.z;
+                    float value2 = passAttributes[ATTRIBUTEV2]->getRawValue(i) / vv2.z;
+                    float value3 = passAttributes[ATTRIBUTEV3]->getRawValue(i) / vv3.z;
+
+                    //interpolate between the three values using barrycentric interpolation
+                    float interpolatedValue = (value1 * barryCentric.x) + (value2 * barryCentric.y) + (value3 * barryCentric.z);
+                    passAttributes[ATTRIBUTEPASS]->setRawValue(i, interpolatedValue / zInterpolated);
+                }
+
+                char fbValue = shader.executeFragmentShader(passAttributes[ATTRIBUTEPASS], fragmentOutput);
+                float fragDepth = (vv1.z / vv1.w) * barryCentric.x + (vv2.z / vv2.w) * barryCentric.y + (vv3.z / vv3.w) * barryCentric.z;
+                depthbuffer_t finalDepth = fragDepth * MAX_DEPTH_VALUE;
+
+                fb->setPixel(i, j, fbValue, finalDepth);
             }
         }
     }
 }
 
-#include <iostream>
-void vertexShader(ShaderProgram& shader, VertexObject& vao, int vertexIndex, Vector4& out) {
-    shader.executeVertexShader(vao.getBufferData(), vertexIndex, out);
-}
-
-void RenderContext::renderIndexedTriangles(ShaderProgram& shader, VertexObject& vao) {
+void RenderContext::renderIndexedTriangles(ShaderProgram& shader, VertexArrayObject& vao) {
     shader.prepare();
     Vector4 v1, v2, v3;
 
+    DataList** passAttributes = shader.getPassBuffers();
+    passAttributes[ATTRIBUTEV1]->clear();
+    passAttributes[ATTRIBUTEV2]->clear();
+    passAttributes[ATTRIBUTEV3]->clear();
+    passAttributes[ATTRIBUTEPASS]->clear();
+
     for(int i = 0; i < vao.getIndicesCount(); i += 3) {
-        vertexShader(shader, vao, vao.getIndices()[i + 0], v1);
-        vertexShader(shader, vao, vao.getIndices()[i + 1], v2);
-        vertexShader(shader, vao, vao.getIndices()[i + 2], v3);
+        shader.executeVertexShader(vao.getBufferData(), passAttributes[0], vao.getIndices()[i + 0], v1);
+        shader.executeVertexShader(vao.getBufferData(), passAttributes[1], vao.getIndices()[i + 1], v2);
+        shader.executeVertexShader(vao.getBufferData(), passAttributes[2], vao.getIndices()[i + 2], v3);
+
+        v1.x /= v1.z;
+        v1.y /= v1.z;
         
-        r.rasterizeTriangle(Vector2(v1.x / v1.z, v1.y / v1. z), Vector2(v2.x / v2.z, v2.y / v2.z), Vector2(v3.x / v3.z, v3.y / v3.z));
+        v2.x /= v2.z;
+        v2.y /= v2.z;
+
+        v3.x /= v3.z;
+        v3.y /= v3.z;
+
+        r.rasterizeTriangle(v1, v2, v3, shader, passAttributes);
+        passAttributes[ATTRIBUTEV1]->clear();
+        passAttributes[ATTRIBUTEV2]->clear();
+        passAttributes[ATTRIBUTEV3]->clear();
+        passAttributes[ATTRIBUTEPASS]->clear();
     }
 }

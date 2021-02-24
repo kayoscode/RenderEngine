@@ -3,10 +3,10 @@
 
 #include "defs.h"
 
-typedef uint8_t depthbuffer_t;
+typedef uint16_t depthbuffer_t;
 typedef uint16_t colorbuffer_t;
 
-#define MAX_DEPTH_VALUE 0xFF
+#define MAX_DEPTH_VALUE 0xFFFF
 
 class Framebuffer{
     public:

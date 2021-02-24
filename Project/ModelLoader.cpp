@@ -4,19 +4,17 @@
 #include <iostream>
 #include <unordered_map>
 
+#define IS_FLOAT_CHAR(i) ((i >= '0' && i <= '9') || (i == '.') || (i == '-'))
+
 struct Vertex {
     int pos, norm, uv;
 
     Vertex(int pos = -1, int norm = -1, int uv = -1) 
-        :pos(pos),
-        norm(norm),
-        uv(uv)
+        :pos(pos), norm(norm), uv(uv)
     {}
 
-    Vertex(const Vertex& v) : 
-        pos(v.pos),
-        norm(v.norm),
-        uv(v.uv)
+    Vertex(const Vertex& v) 
+        :pos(v.pos), norm(v.norm), uv(v.uv)
     {}
 
     Vertex& operator=(const Vertex& v) {
@@ -29,20 +27,14 @@ struct Vertex {
     bool operator==(const Vertex& v) const {
         return pos == v.pos && norm == v.norm && uv == v.uv;
     }
-
 };
 
 class VertexHash {
     public:
-    size_t operator()(const Vertex& v) const {
-        return std::hash<int>()(v.pos) ^ std::hash<int>()(v.norm) ^ std::hash<int>()(v.uv);
-    }
+        size_t operator()(const Vertex& v) const {
+            return std::hash<int>()(v.pos) ^ std::hash<int>()(v.norm) ^ std::hash<int>()(v.uv);
+        }
 };
-
-#define FLOAT_CHAR(i) ((i >= '0' && i <= '9') || (i == '.') || (i == '-'))
-
-bool loadFloats(std::string& line, std::vector<float>& list, uint32_t count);
-bool loadFace(std::string& line, std::vector<int>& indices, std::vector<float>& positions, std::vector<float>& normals, std::vector<float>& uvs, std::unordered_map<Vertex, int, VertexHash>& vertices);
 
 std::vector<std::string> split(const std::string& s, char ch) {
     std::vector<std::string> ret;
@@ -59,79 +51,21 @@ std::vector<std::string> split(const std::string& s, char ch) {
     }
 
     if(l.size() > 0) ret.push_back(l);
+
     return ret;
 }
 
 bool loadFloat(std::string& line, int& index, float& flt) {
-    while(!FLOAT_CHAR(line[index]) && index < line.size()) {
+    while(!IS_FLOAT_CHAR(line[index]) && index < line.size()) {
         index++;
     }
 
-    if(!FLOAT_CHAR(line[index])) return false;
+    if(!IS_FLOAT_CHAR(line[index])) return false;
 
     size_t newIndex = 0;
     flt = std::stof(line.substr(index), &newIndex);
-
     index += newIndex;
     return index != newIndex;
-}
-
-bool loadIndexedModel(const std::string& filePath, IndexedModel& model) {
-    std::ifstream file(filePath);
-    std::string line;
-
-    std::vector<float> positions, normals, uvs;
-    std::vector<int> indices;
-    std::unordered_map<Vertex, int, VertexHash> vertices;
-
-    while(getline(file, line)) {
-        if(line.size() > 2) {
-            if(line[0] == 'v' && line[1] == ' ') {
-                if(!loadFloats(line, positions, 3)) return false;
-            }
-            else if(line[0] == 'v' && line[1] == 't') {
-                if(!loadFloats(line, uvs, 2)) return false;
-            }
-            else if(line[0] == 'v' && line[1] == 'n') {
-                if(!loadFloats(line, normals, 3)) return false;
-            }
-            else if(line[0] == 'f') {
-                if(!loadFace(line, indices, positions, normals, uvs, vertices)) return false;
-            }
-        }
-    }
-
-    //std::cout << vertices.size() << "\n";
-    model.indices = new int[indices.size()];
-    model.positions = new float[vertices.size() * 3];
-    model.normals = new float[vertices.size() * 3];
-    model.uvs = new float[vertices.size() * 2];
-
-    model.positionsCount = vertices.size() * 3;
-    model.normalsCount = vertices.size() * 3;
-    model.uvsCount = vertices.size() * 2;
-
-    for(std::unordered_map<Vertex, int>::iterator i = vertices.begin(); i != vertices.end(); i++) {
-        model.positions[(i->second * 3)] = positions[(i->first.pos * 3)];
-        model.positions[(i->second * 3) + 1] = positions[(i->first.pos * 3) + 1];
-        model.positions[(i->second * 3) + 2] = positions[(i->first.pos * 3) + 2];
-
-        model.normals[(i->second * 3)] = normals[(i->first.norm * 3)];
-        model.normals[(i->second * 3) + 1] = normals[(i->first.norm * 3) + 1];
-        model.normals[(i->second * 3) + 2] = normals[(i->first.norm * 3) + 2];
-
-        model.uvs[(i->second * 2)] = uvs[(i->first.uv * 2)];
-        model.uvs[(i->second * 2) + 1] = uvs[(i->first.uv * 2) + 1];
-    }
-
-    model.indexCount = indices.size();
-    for(int i = 0; i < indices.size(); i++) {
-        model.indices[i] = indices[i];
-        //std::cout << model.positions[(3 * model.indices[i])] << ", " << model.positions[(3 * model.indices[i]) + 1] << " " << model.positions[(3 * model.indices[i]) + 2] << "\n";
-    }
-
-    file.close();
-    return true;
 }
 
 bool loadFloats(std::string& line, std::vector<float>& list, uint32_t count) {
@@ -146,7 +80,8 @@ bool loadFloats(std::string& line, std::vector<float>& list, uint32_t count) {
     return true;
 }
 
-bool loadFace(std::string& line, std::vector<int>& indices, std::vector<float>& positions, std::vector<float>& normals, std::vector<float>& uvs, std::unordered_map<Vertex, int, VertexHash>& vertices) {
+bool loadFace(std::string& line, std::vector<int>& indices, std::vector<float>& positions, std::vector<float>& normals, 
+    std::vector<float>& uvs, std::unordered_map<Vertex, int, VertexHash>& vertices) {
     Vertex vertex1, vertex2, vertex3;
     std::vector<std::string> faceSplit = split(line, ' ');
 
@@ -174,8 +109,6 @@ bool loadFace(std::string& line, std::vector<int>& indices, std::vector<float>& 
     }
     else if(v1.size() == 3) {
         if(v1[1].size() == 0) {
-            if(v2[1].size() != 0 || v3[1].size() != 0) return false;
-
             vertex1.pos = std::stoi(v1[0]) - 1;
             vertex2.pos = std::stoi(v2[0]) - 1;
             vertex3.pos = std::stoi(v3[0]) - 1;
@@ -215,9 +148,64 @@ bool loadFace(std::string& line, std::vector<int>& indices, std::vector<float>& 
     indices.push_back(vertices[vertex2]);
     indices.push_back(vertices[vertex3]);
 
-    //std::cout << vertices[vertex1] << " ";
-    //std::cout << vertices[vertex2] << " ";
-    //std::cout << vertices[vertex3] << "\n";
+    return true;
+}
 
+bool loadIndexedModel(const std::string& filePath, IndexedModel& model) {
+    std::ifstream file(filePath);
+    std::string line;
+
+    std::vector<float> positions, normals, uvs;
+    std::vector<int> indices;
+    std::unordered_map<Vertex, int, VertexHash> vertices;
+
+    while(getline(file, line)) {
+        if(line.size() > 2) {
+            if(line[0] == 'v' && line[1] == ' ') {
+                if(!loadFloats(line, positions, 3)) return false;
+            }
+            else if(line[0] == 'v' && line[1] == 't') {
+                if(!loadFloats(line, uvs, 2)) return false;
+            }
+            else if(line[0] == 'v' && line[1] == 'n') {
+                if(!loadFloats(line, normals, 3));
+            }
+            else if(line[0] == 'f') {
+                if(!loadFace(line, indices, positions, normals, uvs, vertices)) return false;
+            }
+        }
+    }
+
+    //std::cout << vertices.size() << "\n";
+    model.indices = new int[indices.size()];
+    model.positions = new float[vertices.size() * 3];
+    model.normals = new float[vertices.size() * 3];
+    model.uvs = new float[vertices.size() * 2];
+
+    model.positionsCount = vertices.size() * 3;
+    model.normalsCount = vertices.size() * 3;
+    model.uvsCount = vertices.size() * 2;
+
+    //loop through every vertex and write to each index the correct values from 
+    for(std::unordered_map<Vertex, int>::iterator i = vertices.begin(); i != vertices.end(); i++) {
+        model.positions[(i->second * 3) + 0] = positions[(i->first.pos * 3) + 0];
+        model.positions[(i->second * 3) + 1] = positions[(i->first.pos * 3) + 1];
+        model.positions[(i->second * 3) + 2] = positions[(i->first.pos * 3) + 2];
+
+        model.normals[(i->second * 3) + 0] = normals[(i->first.norm * 3) + 0];
+        model.normals[(i->second * 3) + 1] = normals[(i->first.norm * 3) + 1];
+        model.normals[(i->second * 3) + 2] = normals[(i->first.norm * 3) + 2];
+
+        model.uvs[(i->second * 2) + 0] = uvs[(i->first.uv * 2) + 0];
+        model.uvs[(i->second * 2) + 1] = uvs[(i->first.uv * 2) + 1];
+    }
+
+    //finally copy over the indices
+    model.indexCount = indices.size();
+    for(int i = 0; i < indices.size(); i++) {
+        model.indices[i] = indices[i];
+    }
+
+    file.close();
     return true;
 }

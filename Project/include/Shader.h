@@ -3,21 +3,22 @@
 
 #include "DataList.h"
 
-class Shader{
+class Shader {
     public:
-        Shader(int uniformCount) :
-            uniforms(uniformCount)
-        { }
+        Shader(int uniformCount) : uniforms(uniformCount) {
 
-        virtual void initShader() { 
-            //call setin and setout methods to get indices for each attribute (both input and output)
+        }
+
+        virtual void initShader() {
+            //bind the uniforms to proper locations
         }
 
         virtual void prepare() {
-            //prepare for the frame: store uniforms in global variables at the beginning of the frame so you don't have to perform a copy for each execute call
+            //perform calculations that don't need to be done per pixel to save time
         }
 
         virtual ~Shader() {
+
         }
 
         DataList* getUniforms() {

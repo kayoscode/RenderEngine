@@ -1,9 +1,8 @@
-
 #ifndef INCLUDE_LOADER_H
 #define INCLUDE_LOADER_H
 
-#include <vector>
 #include "defs.h"
+#include <vector>
 #include <string>
 
 class IndexedModel {
@@ -18,12 +17,12 @@ class IndexedModel {
         int normalsCount;
         int uvsCount;
 
-        ~IndexedModel() {
-            delete[] indices;
-            delete[] positions;
-            delete[] normals;
-            delete[] uvs;
-        }
+    ~IndexedModel() {
+        delete[] indices;
+        delete[] positions;
+        delete[] normals;
+        delete[] uvs;
+    }
 };
 
 bool loadIndexedModel(const std::string& filePath, IndexedModel& model);

@@ -2,7 +2,7 @@
 #define INCLUDE_RAZTERIZER_H
 
 #include "Framebuffer.h"
-#include "VertexObject.h"
+#include "VertexArrayObject.h"
 #include "ShaderProgram.h"
 #include <thread>
 
@@ -10,13 +10,15 @@ class Vector2;
 class Vector3;
 class Vector4;
 class Matrix44;
+class DataList;
+class ShaderProgram;
 
 class Rasterizer{
     public:
         Rasterizer(int width, int height);
         virtual ~Rasterizer();
 
-        void rasterizeTriangle(const Vector2& v1, const Vector2& v2, const Vector2& v3);
+        void rasterizeTriangle(const Vector4& v1, const Vector4& v2, const Vector4& v3, ShaderProgram& shader, DataList** passAttributes);
 
         void presentFrame();
 
@@ -48,14 +50,14 @@ class Rasterizer{
 
 class RenderContext {
     public:
-        RenderContext(int fbWidth, int fbHeight):
-            r(fbWidth, fbHeight) 
+        RenderContext(int fbWidth, int fbHeight) :
+            r(fbWidth, fbHeight)
         {}
 
-        void renderIndexedTriangles(ShaderProgram& shader, VertexObject& vao);
+        void renderIndexedTriangles(ShaderProgram& shader, VertexArrayObject& vao);
 
         Rasterizer* getRasterizer() {
-            return &r; 
+            return &r;
         }
 
     private:

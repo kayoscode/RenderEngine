@@ -35,7 +35,7 @@ bool renderCB(){
 
     angle += .001f;
 
-    transformation.translate(Vector3(0, 0, -2.0f));
+    transformation.translate(Vector3(0, 0, -1.0f));
     transformation.scale(Vector3(1, 1, 1));
     transformation.rotate(Vector3(.6, 1, .2).normalize(), angle);
 

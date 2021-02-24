@@ -1,4 +1,3 @@
-
 #ifndef INCLUDE_FRAGMENT_SHADER_H
 #define INCLUDE_FRAGMENT_SHADER_H
 
@@ -6,14 +5,15 @@
 
 class FragmentShader : public Shader {
     public:
-        FragmentShader(int uniformCount) 
-            :Shader(uniformCount)
+        FragmentShader(int uniformCount) :
+            Shader(uniformCount)
         {}
 
-        virtual void execute(DataList** attributesIn, DataList** attributesOut, int attributeLocation, Vector4& output) {
+        virtual char execute(DataList* attributes, Vector4& output) {
+            return '#';
         }
 
-        ~FragmentShader() {}
+        virtual ~FragmentShader() {}
 };
 
 #endif
