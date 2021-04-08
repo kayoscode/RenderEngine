@@ -36,9 +36,9 @@ bool renderCB(){
     angle += .001f;
 
     //make sure you are doing the rotation before the scale!
-    transformation.translate(Vector3(0, 0, -2.0f));
-    transformation.rotate(Vector3(.7, 2, .6).normalize(), angle);
-    transformation.scale(Vector3(1, 1, 1));
+    transformation.translate(Vector3(0, -2, -3.0f));
+    transformation.rotate(Vector3(.7, 1, .6).normalize(), angle);
+    transformation.scale(Vector3(.5, .5, .5));
 
     //set uniforms
     vs.getUniforms()->set(vs.locationProjectionMatrix, cam->getProjectionMatrix());
@@ -55,7 +55,7 @@ bool renderCB(){
 }
 
 int main(void){
-    if(!loadIndexedModel("res/text.obj", model)) {
+    if(!loadIndexedModel("res/stand.obj", model)) {
         std::cout << "Failed to load model";
         return -1;
     }
@@ -75,7 +75,7 @@ int main(void){
 
     renderContext = new RenderContext(WW, WH);
     cam = new Camera();
-    cam->createProjection(1.31f, (WW) / (WH * 2), .2f, 400);
+    cam->createProjection(1.13, (WW / (float)2.0) / (WH), .2f, 400);
 
     renderContext->getRasterizer()->setRenderCB(renderCB);
 

@@ -110,30 +110,31 @@ void Rasterizer::rasterizeTriangle(const Vector4& vv1, const Vector4& vv2, const
     maxx = MIN(fb->getWidth(), MAX(v1.x, MAX(v2.x, v3.x)) + 1);
     maxy = MIN(fb->getHeight(), MAX(v1.y, MAX(v2.y, v3.y)) + 1);
 
-    float z1 = 1 / vv1.z;
-    float z2 = 1 / vv2.z;
-    float z3 = 1 / vv3.z;
     Vector4 fragmentOut;
 
     for(int j = miny; j < maxy; j++){
         for(int i = minx; i < maxx; i++){
-            Vector3 barryCentric;
+            Vector3 barryCentric, pcBarrycentric;
             getBarryCentricCoordinates(i, j, v1, v2, v3, barryCentric);
 
-            if(isPointInTriangle(barryCentric)){
-                float interpolatedInverseZ = z1 * barryCentric.x + z2 * barryCentric.y + z3 * barryCentric.z;
+	    //calculate corrected barrycentric
+	    float denominator = (barryCentric.x / vv1.w) + (barryCentric.y / vv2.w) + (barryCentric.z / vv3.w);
+	    pcBarrycentric.x = (barryCentric.x / vv1.z) / denominator;
+	    pcBarrycentric.y = (barryCentric.y / vv2.z) / denominator;
+	    pcBarrycentric.z = (barryCentric.z / vv3.z) / denominator;
 
+            if(isPointInTriangle(barryCentric)){
                 //loop through each value in the pass buffer and interpolate the value
                 //inverse Z allows for translation from AFFINE interpolation
                 //allowing projection space interpolation
                 for(int i = 0; i < rawSize; i++) {
-                    float value1 = passAttributes[PASS_ATTRIBUTEV1]->getRawValue(i) / vv1.z;
-                    float value2 = passAttributes[PASS_ATTRIBUTEV2]->getRawValue(i) / vv1.z;
-                    float value3 = passAttributes[PASS_ATTRIBUTEV3]->getRawValue(i) / vv1.z;
+                    float value1 = passAttributes[PASS_ATTRIBUTEV1]->getRawValue(i);
+                    float value2 = passAttributes[PASS_ATTRIBUTEV2]->getRawValue(i);
+                    float value3 = passAttributes[PASS_ATTRIBUTEV3]->getRawValue(i);
 
                     //interpolate between the three values using barrycentric interpolation
-                    float interpolatedValue = (value1 * barryCentric.x) + (value2 * barryCentric.y) + (value3 * barryCentric.z);
-                    passAttributes[PASS_ATTRIBUTE_OUT]->setRawValue(i, interpolatedValue / interpolatedInverseZ);
+                    float interpolatedValue = (value1 * pcBarrycentric.x) + (value2 * pcBarrycentric.y) + (value3 * pcBarrycentric.z);
+                    passAttributes[PASS_ATTRIBUTE_OUT]->setRawValue(i, interpolatedValue);
                 }
 
                 char outputChar = shader.executeFragmentShader(passAttributes[PASS_ATTRIBUTE_OUT], fragmentOut);
